@@ -6,11 +6,12 @@
 struct commands {
     char show_tabs;
     char show_nline;
+    char show_end;
 };
 
 void process_args(char **argv, int argc, struct commands *coms)
 {
-    char *args = "Tn";
+    char *args = "TEn";
     char tmp;
 
     while((tmp = getopt(argc, argv, args)) != -1) {
@@ -21,6 +22,9 @@ void process_args(char **argv, int argc, struct commands *coms)
 	    case 'n':
 		coms->show_nline = 1;
 		break;
+	    case 'E':
+		coms->show_end = 1;
+		break;
 	    default:
 		exit(EXIT_FAILURE);
 	}
@@ -29,7 +33,7 @@ void process_args(char **argv, int argc, struct commands *coms)
     
 }
 
-void print_con(char ch, int n, int next, int nch, struct commands *coms) 
+void print_con(char ch, int *line, int next, int nch, struct commands *coms) 
 {
     if(coms->show_tabs) {
 	if(ch == '\t') {
@@ -40,10 +44,25 @@ void print_con(char ch, int n, int next, int nch, struct commands *coms)
     
     if(coms->show_nline) {
 	if(nch == 0) {
-	    printf("    %3d  ",n);
+	    printf("    %3d  ",*line);
 	}
 	if(ch == '\n' && next != EOF) {
-	    printf("\n    %3d  ",n);
+	    ++(*line);
+	    if(!coms->show_end) {
+		printf("\n    %3d  ",*line);
+		return;
+	    }
+	    else {
+		printf("$\n    %3d  ",*line);
+		return;
+	    }
+	}
+    }
+
+    if(coms->show_end) {
+	if(ch == '\n') {
+	    ++(*line);
+	    printf("$\n");
 	    return;
 	}
     }
@@ -61,13 +80,10 @@ void print_fc(char *filename, int *line, struct commands *coms)
     if(f != NULL) {
 	while((tmp = fgetc(f)) != EOF) {
 	    curr = ftell(f);
-	    if(tmp == '\n') {
-		++(*line);
-	    }
 	    
 	    next = fgetc(f);
 	    fseek(f, curr, SEEK_SET); // Getting back to the current position after getting the next character;
-	    print_con(tmp, *line, next, nch, coms);
+	    print_con(tmp, line, next, nch, coms);
 	    ++nch;
 	}
 
