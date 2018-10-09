@@ -70,6 +70,16 @@ void print_con(char ch, int *line, int next, int nch, struct commands *coms)
     printf("%c", ch);
 }
 
+void std_in() 
+{
+    int str;
+    while(1) {
+	str = getchar();
+	printf("%c", str);
+    }
+
+}
+
 void print_fc(char *filename, int *line, struct commands *coms)
 {
     int tmp, curr, next;
@@ -90,11 +100,7 @@ void print_fc(char *filename, int *line, struct commands *coms)
     }
     else if(filename[0] == '-') {
 	    if(strlen(filename) == 1) {
-		int str;
-		while(1) {
-		    str = getchar();
-		    printf("%c", str);
-		}
+		std_in();
 	    }
     }
     else {
@@ -106,7 +112,7 @@ void print_fc(char *filename, int *line, struct commands *coms)
 int main(int argc, char *argv[]) 
 {
     if(argc <= 1)
-	exit(EXIT_SUCCESS);
+	std_in();
 
     struct commands coms = {0,0};
     process_args(argv, argc, &coms);
