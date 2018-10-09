@@ -1,47 +1,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
-int commands[10] = {0}; // commands[0] : show tabs, commands[1] : line numbers... 
+struct commands {
+    char show_tabs;
+    char show_nline;
+};
 
-void process_args(char **argv, int argc)
+void process_args(char **argv, int argc, struct commands *coms)
 {
-    int i;
-    for(int i = 1; i < argc; i++) {
-	if(strncmp("-", argv[i], 1) == 0 && strlen(argv[i]) > 1) {
-	    int j;
-	    for(j = 1; argv[i][j] != '\0'; j++) {
-		switch(argv[i][j]) {
-		    case 'T':
-			commands[0] = 1;
-			break;
-		    case 'n':
-			commands[1] = 1;
-			break;
-		    default:
-			printf("%c is an invalid option.\n", argv[i][j]);
-			exit(EXIT_FAILURE);
-		}
-	    }
+    char *args = "Tn";
+    char tmp;
+
+    while((tmp = getopt(argc, argv, args)) != -1) {
+	switch(tmp) {
+	    case 'T':
+		coms->show_tabs = 1;
+		break;
+	    case 'n':
+		coms->show_nline = 1;
+		break;
+	    default:
+		exit(EXIT_FAILURE);
 	}
+	
     }
+    
 }
 
-void print_con(char ch, int n, int next, int nch) 
+void print_con(char ch, int n, int next, int nch, struct commands *coms) 
 {
-    if(commands[0]) {
+    if(coms->show_tabs) {
 	if(ch == '\t') {
 	    printf("^I");
 	    return;
 	}
     }
     
-    if(commands[1]) {
+    if(coms->show_nline) {
 	if(nch == 0) {
-	    printf("   %3d  ",n);
+	    printf("    %3d  ",n);
 	}
 	if(ch == '\n' && next != EOF) {
-	    printf("\n    %2d  ",n);
+	    printf("\n    %3d  ",n);
 	    return;
 	}
     }
@@ -49,7 +51,7 @@ void print_con(char ch, int n, int next, int nch)
     printf("%c", ch);
 }
 
-void print_fc(char *filename, int *line)
+void print_fc(char *filename, int *line, struct commands *coms)
 {
     int tmp, curr, next;
     int nch = 0;
@@ -65,7 +67,7 @@ void print_fc(char *filename, int *line)
 	    
 	    next = fgetc(f);
 	    fseek(f, curr, SEEK_SET); // Getting back to the current position after getting the next character;
-	    print_con(tmp, *line, next, nch);
+	    print_con(tmp, *line, next, nch, coms);
 	    ++nch;
 	}
 
@@ -89,11 +91,12 @@ int main(int argc, char *argv[])
     if(argc <= 1)
 	exit(EXIT_SUCCESS);
 
-    process_args(argv, argc);
+    struct commands coms = {0,0};
+    process_args(argv, argc, &coms);
 
     int i, line = 1;
     for(i = 1; i < argc; i++) {
-	print_fc(argv[i], &line);
+	print_fc(argv[i], &line, &coms);
     }
     
     exit(EXIT_SUCCESS);
