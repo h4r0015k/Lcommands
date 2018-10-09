@@ -71,17 +71,18 @@ void print_fc(char *filename, int *line, struct commands *coms)
 	    ++nch;
 	}
 
-    } else if(strncmp("-", filename, 1) == 0) {
-	if(strlen(filename) == 1) {
-	    int str;
-	    while(1) {
-		str = getchar();
-		printf("%c", str);
+    }
+    else if(filename[0] == '-') {
+	    if(strlen(filename) == 1) {
+		int str;
+		while(1) {
+		    str = getchar();
+		    printf("%c", str);
+		}
 	    }
-	}
     }
     else {
-	printf("%s not found", filename);
+	printf("File %s not found.\n", filename);
 	exit(EXIT_FAILURE);
     }
 }
