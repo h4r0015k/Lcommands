@@ -6,6 +6,6 @@ Writing linux commands in C.
 
 ## Compiling & Running
 ```
-gcc -o cat cat.c
-./cat cat.c -nT
+make
+./cat test -nT
 ```
