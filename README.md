@@ -2,7 +2,7 @@
 Writing linux commands in C.
 
 ## Commands
-- cat - Supports arguments n,E and T.
+- cat - Support flags n,E and T.
 - ls
 
 ## Compiling 
