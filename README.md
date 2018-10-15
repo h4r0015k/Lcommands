@@ -3,9 +3,9 @@ Writing linux commands in C.
 
 ## Commands
 - cat - Supports arguments n,E and T.
+- ls
 
-## Compiling & Running
+## Compiling 
 ```
-make
-./cat test -nT
+make <command_name>
 ```
