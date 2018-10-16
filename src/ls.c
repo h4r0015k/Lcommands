@@ -25,7 +25,8 @@ void print_dir(char *dir)
 	printf("%s\t",p->d_name);
     }
     printf("\n");
-
+    
+    closedir(d);
 }
 
 void process_args(int argc, char **argv)
