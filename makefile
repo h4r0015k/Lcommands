@@ -9,3 +9,6 @@ ls: $(SRC)ls.c
 
 rm: $(SRC)rm.c
 	$(CC) -o rm $(SRC)rm.c
+
+cp: $(SRC)cp.c
+	$(CC) -o cp $(SRC)cp.c

@@ -5,6 +5,7 @@ Writing linux commands in C.
 - cat - Support flags n,E and T.
 - ls
 - rm
+- cp
 
 ## Compiling 
 ```
