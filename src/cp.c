@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
 
 #define BUFF_SIZE 512
 
@@ -39,9 +40,27 @@ int main(int argc, char *argv[])
 	perror("Error");
 
     // Open destination file
-    int df = open(argv[2], O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
+    int df = open(argv[2], O_CREAT | O_EXCL | O_WRONLY, S_IRUSR | S_IWUSR);
 
-    if(df < 0) {
+    if(errno == EEXIST) {
+	char in;
+	printf("Destination file exists, replace? [y/n] :");
+	scanf("%c", &in);
+
+	switch(in) {
+	    case 'y':
+		df = open(argv[2], O_CREAT | O_TRUNC | O_WRONLY, S_IRUSR | S_IWUSR);
+		break;
+	    case 'n':
+		close(sf);
+		exit(EXIT_SUCCESS);
+		break;
+	    default:
+		exit(EXIT_FAILURE);
+		break;
+	}
+    }
+    else if(df < 0){
 	close(sf);
 	perror("Error");
     }
