@@ -12,3 +12,6 @@ rm: $(SRC)rm.c
 
 cp: $(SRC)cp.c
 	$(CC) -o cp $(SRC)cp.c
+
+printenv: $(SRC)printenv.c
+	$(CC) -o printenv $(SRC)printenv.c

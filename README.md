@@ -6,6 +6,7 @@ Writing linux commands in C.
 - ls
 - rm
 - cp
+- printenv
 
 ## Compiling 
 ```
